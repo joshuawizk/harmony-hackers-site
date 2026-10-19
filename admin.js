@@ -6,9 +6,14 @@ const loginPanel = document.querySelector("#login-panel");
 const workspace = document.querySelector("#admin-workspace");
 const logoutButton = document.querySelector("#logout-button");
 const loginForm = document.querySelector("#login-form");
+const recoveryPanel = document.querySelector("#password-reset-panel");
+const recoveryForm = document.querySelector("#password-reset-form");
+const forgotPasswordButton = document.querySelector("#forgot-password-button");
 const musicForm = document.querySelector("#music-form");
 const eventForm = document.querySelector("#event-form");
 const state = { supabase: null, music: [], events: [] };
+let isPasswordRecovery = new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery"
+  || new URLSearchParams(window.location.search).get("type") === "recovery";
 
 function setStatus(message, isError = false) {
   status.textContent = message;
@@ -17,12 +22,21 @@ function setStatus(message, isError = false) {
 
 function showLogin() {
   loginPanel.hidden = false;
+  recoveryPanel.hidden = true;
+  workspace.hidden = true;
+  logoutButton.hidden = true;
+}
+
+function showPasswordReset() {
+  loginPanel.hidden = true;
+  recoveryPanel.hidden = false;
   workspace.hidden = true;
   logoutButton.hidden = true;
 }
 
 function showWorkspace() {
   loginPanel.hidden = true;
+  recoveryPanel.hidden = true;
   workspace.hidden = false;
   logoutButton.hidden = false;
 }
@@ -293,6 +307,46 @@ if (!hasSupabaseConfig()) {
     await authorizeSession(data.session);
   });
 
+  forgotPasswordButton.addEventListener("click", async () => {
+    const emailField = loginForm.elements.namedItem("email");
+    if (!emailField.reportValidity()) return;
+    setStatus("Sending password recovery email…");
+    const redirectTo = new URL("admin.html", window.location.href).toString();
+    const { error } = await state.supabase.auth.resetPasswordForEmail(emailField.value.trim(), { redirectTo });
+    if (error) {
+      console.error("Unable to send password recovery email.", error);
+      setStatus(`Could not send recovery email: ${error.message}`, true);
+      return;
+    }
+    setStatus("Password recovery email sent. Check your inbox and spam folder.");
+  });
+
+  recoveryForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const values = readForm(recoveryForm, ["password", "confirm_password"]);
+    if (values.password !== values.confirm_password) {
+      setStatus("The passwords do not match.", true);
+      return;
+    }
+    setStatus("Updating your password…");
+    const { error } = await state.supabase.auth.updateUser({ password: values.password });
+    if (error) {
+      console.error("Unable to update admin password.", error);
+      setStatus(`Could not update password: ${error.message}`, true);
+      return;
+    }
+    isPasswordRecovery = false;
+    window.history.replaceState(null, "", window.location.pathname);
+    const { data, error: sessionError } = await state.supabase.auth.getSession();
+    if (sessionError) {
+      console.error("Unable to restore the admin session after password reset.", sessionError);
+      showLogin();
+      setStatus(`Password updated, but sign-in could not be restored: ${sessionError.message}`, true);
+      return;
+    }
+    await authorizeSession(data.session);
+  });
+
   logoutButton.addEventListener("click", async () => {
     const { error } = await state.supabase.auth.signOut();
     if (error) {
@@ -305,6 +359,12 @@ if (!hasSupabaseConfig()) {
   });
 
   state.supabase.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") {
+      isPasswordRecovery = true;
+      showPasswordReset();
+      setStatus("Choose a new password for your admin account.");
+      return;
+    }
     if (event === "SIGNED_OUT") {
       showLogin();
       state.music = [];
@@ -338,6 +398,16 @@ if (!hasSupabaseConfig()) {
     if (error) {
       console.error("Unable to restore admin session.", error);
       setStatus(`Could not restore admin session: ${error.message}`, true);
+      return;
+    }
+    if (isPasswordRecovery) {
+      if (!data.session) {
+        showLogin();
+        setStatus("This password-reset link is invalid or expired. Request a new one.", true);
+        return;
+      }
+      showPasswordReset();
+      setStatus("Choose a new password for your admin account.");
       return;
     }
     authorizeSession(data.session);

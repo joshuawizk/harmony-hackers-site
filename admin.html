@@ -32,7 +32,18 @@
         <label>PASSWORD<input name="password" type="password" autocomplete="current-password" required></label>
         <button class="button button-gold" type="submit">SIGN IN <span>↗</span></button>
       </form>
+      <button class="admin-cancel" id="forgot-password-button" type="button">FORGOT PASSWORD?</button>
       <small>Admin accounts are created privately in Supabase. There is no public sign-up.</small>
+    </section>
+
+    <section class="admin-login" id="password-reset-panel" hidden aria-labelledby="password-reset-title">
+      <p class="eyebrow"><span class="gold-dot"></span> ACCOUNT RECOVERY</p>
+      <h1 id="password-reset-title">SET A NEW <em>PASSWORD.</em></h1>
+      <form id="password-reset-form">
+        <label>NEW PASSWORD<input name="password" type="password" autocomplete="new-password" minlength="6" required></label>
+        <label>CONFIRM PASSWORD<input name="confirm_password" type="password" autocomplete="new-password" minlength="6" required></label>
+        <button class="button button-gold" type="submit">UPDATE PASSWORD <span>↗</span></button>
+      </form>
     </section>
 
     <section class="admin-workspace" id="admin-workspace" hidden aria-label="Content management">

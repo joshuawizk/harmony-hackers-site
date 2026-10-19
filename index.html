@@ -6,6 +6,16 @@
   <meta name="theme-color" content="#090909">
   <meta name="description" content="Harmony Hackers Entertainment — uniting talent and inspiring communities in Jinja, Uganda.">
   <title>Harmony Hackers Entertainment — Jinja, Uganda</title>
+  <script>
+    const authQuery = new URLSearchParams(window.location.search);
+    const authHash = new URLSearchParams(window.location.hash.slice(1));
+    if (authQuery.has("code") || authQuery.get("type") === "recovery" || authHash.get("type") === "recovery") {
+      const adminUrl = new URL("admin.html", window.location.href);
+      adminUrl.search = window.location.search;
+      adminUrl.hash = window.location.hash;
+      window.location.replace(adminUrl);
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
