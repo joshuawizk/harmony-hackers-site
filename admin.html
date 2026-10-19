@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090909">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Private Harmony Hackers content management.">
+  <title>Private Admin — Harmony Hackers Entertainment</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-page">
+  <header class="admin-top">
+    <a class="brand" href="index.html" aria-label="Harmony Hackers public site">
+      <span class="brand-mark"><img src="assets/harmony-hackers-logo.png" alt=""></span>
+      <span class="brand-name">HARMONY HACKERS<small>PRIVATE ADMIN</small></span>
+    </a>
+    <button class="admin-logout" id="logout-button" type="button" hidden>LOG OUT</button>
+  </header>
+  <main class="admin-main">
+    <p class="admin-notice">Private content management. Only accounts explicitly authorized in Supabase can publish or edit content.</p>
+    <p class="admin-status" id="admin-status" role="status" aria-live="polite"></p>
+
+    <section class="admin-login" id="login-panel" aria-labelledby="login-title">
+      <p class="eyebrow"><span class="gold-dot"></span> APPROVED ADMINS ONLY</p>
+      <h1 id="login-title">SIGN IN TO <em>MANAGE.</em></h1>
+      <form id="login-form">
+        <label>ADMIN EMAIL<input name="email" type="email" autocomplete="username" required></label>
+        <label>PASSWORD<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="button button-gold" type="submit">SIGN IN <span>↗</span></button>
+      </form>
+      <small>Admin accounts are created privately in Supabase. There is no public sign-up.</small>
+    </section>
+
+    <section class="admin-workspace" id="admin-workspace" hidden aria-label="Content management">
+      <div class="admin-page-heading">
+        <div><p class="eyebrow"><span class="gold-dot"></span> SHARED PUBLISHED CONTENT</p><h1>MANAGE <em>CONTENT.</em></h1></div>
+        <a class="admin-public-link" href="index.html">VIEW PUBLIC SITE ↗</a>
+      </div>
+      <p class="admin-publish-note">Saving publishes changes to the public website. You can edit or delete any listed item.</p>
+      <div class="admin-columns">
+        <section class="admin-column" aria-labelledby="music-editor-title">
+          <h2 id="music-editor-title">MUSIC</h2>
+          <form class="admin-form" id="music-form">
+            <label>SONG TITLE<input name="title" required maxlength="90"></label>
+            <label>ARTIST<input name="artist" required maxlength="90"></label>
+            <label>LISTEN LINK<input name="listen_url" type="url" placeholder="https://..." required></label>
+            <label>DIRECT AUDIO FILE <span class="optional">(OPTIONAL)</span><input name="audio_url" type="url" placeholder="https://.../track.mp3"></label>
+            <label>OR UPLOAD AUDIO <span class="optional">(MAX 50 MB)</span><input name="audio_file" type="file" accept="audio/mpeg,audio/mp4,audio/ogg,audio/wav,audio/x-wav,audio/aac,audio/flac"></label>
+            <label>COVER IMAGE URL <span class="optional">(OPTIONAL)</span><input name="artwork_url" type="url" placeholder="https://..."></label>
+            <label>OR UPLOAD COVER <span class="optional">(MAX 50 MB)</span><input name="artwork_file" type="file" accept="image/jpeg,image/png,image/webp"></label>
+            <div class="admin-form-actions"><button class="button button-gold" type="submit">ADD MUSIC <span>↗</span></button><button class="admin-cancel" type="button" hidden>CANCEL EDIT</button></div>
+          </form>
+          <div class="admin-items" id="admin-music-list" aria-label="Manage music"></div>
+        </section>
+        <section class="admin-column" aria-labelledby="event-editor-title">
+          <h2 id="event-editor-title">EVENTS</h2>
+          <form class="admin-form" id="event-form">
+            <label>EVENT TITLE<input name="title" required maxlength="90"></label>
+            <label>DATE <span class="optional">(OPTIONAL)</span><input name="event_date" type="date"></label>
+            <label>LOCATION<input name="location" required maxlength="90"></label>
+            <label>DESCRIPTION<textarea name="description" rows="3" required maxlength="300"></textarea></label>
+            <label>EVENT IMAGE URL <span class="optional">(OPTIONAL)</span><input name="image_url" type="url" placeholder="https://..."></label>
+            <label>OR UPLOAD EVENT IMAGE <span class="optional">(MAX 50 MB)</span><input name="image_file" type="file" accept="image/jpeg,image/png,image/webp"></label>
+            <div class="admin-form-actions"><button class="button button-gold" type="submit">ADD EVENT <span>↗</span></button><button class="admin-cancel" type="button" hidden>CANCEL EDIT</button></div>
+          </form>
+          <div class="admin-items" id="admin-event-list" aria-label="Manage events"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
